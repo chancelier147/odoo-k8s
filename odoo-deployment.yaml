@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: odoo
+  name: odoo
+spec:
+  selector:
+    matchLabels:
+      io.kompose.service: odoo
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        io.kompose.service: odoo
+    spec:
+      securityContext:
+        runAsUser: 0
+      containers:
+      - env:
+        - name: HOST
+          valueFrom:
+            configMapKeyRef:
+              key: HOST
+              name: odoo-env
+        - name: PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              key: PASSWORD
+              name: odoo-env
+        - name: PGDATA
+          valueFrom:
+            configMapKeyRef:
+              key: PGDATA
+              name: odoo-env
+        - name: POSTGRES_DB
+          valueFrom:
+            configMapKeyRef:
+              key: POSTGRES_DB
+              name: odoo-env
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              key: POSTGRES_PASSWORD
+              name: odoo-env
+        - name: POSTGRES_USER
+          valueFrom:
+            configMapKeyRef:
+              key: POSTGRES_USER
+              name: odoo-env
+        - name: USER
+          valueFrom:
+            configMapKeyRef:
+              key: USER
+              name: odoo-env
+        image: odoo:16.0
+        name: odoo
+        ports:
+        - containerPort: 8069
+        volumeMounts:
+        - mountPath: /var/lib/odoo
+          name: data
+      restartPolicy: Always
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: data

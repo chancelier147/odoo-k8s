@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: postgres
+  name: postgres
+spec:
+  selector:
+    matchLabels:
+      io.kompose.service: postgres
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        io.kompose.service: postgres
+    spec:
+      securityContext:
+        runAsUser: 0
+      containers:
+      - env:
+        - name: HOST
+          valueFrom:
+            configMapKeyRef:
+              key: HOST
+              name: postgres-env
+        - name: PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              key: PASSWORD
+              name: postgres-env
+        - name: PGDATA
+          valueFrom:
+            configMapKeyRef:
+              key: PGDATA
+              name: postgres-env
+        - name: POSTGRES_DB
+          valueFrom:
+            configMapKeyRef:
+              key: POSTGRES_DB
+              name: postgres-env
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              key: POSTGRES_PASSWORD
+              name: postgres-env
+        - name: POSTGRES_USER
+          valueFrom:
+            configMapKeyRef:
+              key: POSTGRES_USER
+              name: postgres-env
+        - name: USER
+          valueFrom:
+            configMapKeyRef:
+              key: USER
+              name: postgres-env
+        image: postgres:13
+        name: postgres
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data/pgdata
+          name: db
+      restartPolicy: Always
+      volumes:
+      - name: db
+        persistentVolumeClaim:
+          claimName: db

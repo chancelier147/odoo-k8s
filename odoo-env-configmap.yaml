@@ -1,0 +1,14 @@
+apiVersion: v1
+data:
+  HOST: postgres
+  PASSWORD: postgres
+  PGDATA: /var/lib/postgresql/data/pgdata
+  POSTGRES_DB: postgres
+  POSTGRES_PASSWORD: postgres
+  POSTGRES_USER: odoo
+  USER: odoo
+kind: ConfigMap
+metadata:
+  labels:
+    io.kompose.service: odoo-env
+  name: odoo-env
